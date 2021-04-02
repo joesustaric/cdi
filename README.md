@@ -25,7 +25,8 @@ cd cdi
 ### Dependency management
 
 We're using Go 1.16+ and [Go Modules](https://github.com/golang/go/wiki/Modules)
-# TODO later
+
+<TODO later>
 
 If you introduce a new package:
 
