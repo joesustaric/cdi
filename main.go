@@ -1,7 +1,15 @@
 package main
 
-import "fmt"
+import (
+	"log"
+	"os"
+
+	"github.com/urfave/cli/v2"
+)
 
 func main() {
-	fmt.Println("hello world")
+	err := cli.NewApp().Run(os.Args)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
