@@ -49,11 +49,13 @@ windows:
 	cd - >/dev/null
 
 test:
-	if ! hash go2xunit 2>/dev/null; then go install github.com/tebeka/go2xunit; fi
-	cd ${BUILD_DIR}; \
-	godep go test -v ./... 2>&1 | go2xunit -output ${TEST_REPORT} ; \
-	cd - >/dev/null
-
+	# something is wrong with this
+	# if ! hash go2xunit 2>/dev/null; then go install github.com/tebeka/go2xunit; fi
+	# cd ${BUILD_DIR}; \
+	# godep go test -v ./... 2>&1 | go2xunit -output ${TEST_REPORT} ; \
+	# cd - >/dev/null
+	# Just doing basic test now
+	go test ./...
 vet:
 	-cd ${BUILD_DIR}; \
 	godep go vet ./... > ${VET_REPORT} 2>&1 ; \
