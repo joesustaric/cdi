@@ -1,19 +1,18 @@
 # Borrowed from:
 # https://github.com/silven/go-example/blob/master/Makefile
-# https://vic.demuzere.be/articles/golang-makefile-crosscompile/
 
 BINARY = cdi
 VET_REPORT = vet.report
 TEST_REPORT = tests.xml
 GOARCH = amd64
 
-VERSION?=?
+VERSION?=0.1
 COMMIT=$(shell git rev-parse HEAD)
 BRANCH=$(shell git rev-parse --abbrev-ref HEAD)
 
 # Symlink into GOPATH
 GITHUB_USERNAME=joesustaric
-BUILD_DIR=${GOPATH}/src/github.com/${GITHUB_USERNAME}/${BINARY}
+BUILD_DIR=${GOPATH}/src/github.com/${GITHUB_USERNAME}/cdi/cmd/cdi
 CURRENT_DIR=$(shell pwd)
 BUILD_DIR_LINK=$(shell readlink ${BUILD_DIR})
 
@@ -21,35 +20,25 @@ BUILD_DIR_LINK=$(shell readlink ${BUILD_DIR})
 LDFLAGS = -ldflags "-X main.VERSION=${VERSION} -X main.COMMIT=${COMMIT} -X main.BRANCH=${BRANCH}"
 
 # Build the project
-all: link clean test vet linux darwin windows
-
-link:
-	BUILD_DIR=${BUILD_DIR}; \
-	BUILD_DIR_LINK=${BUILD_DIR_LINK}; \
-	CURRENT_DIR=${CURRENT_DIR}; \
-	if [ "$${BUILD_DIR_LINK}" != "$${CURRENT_DIR}" ]; then \
-	    echo "Fixing symlinks for build"; \
-	    rm -f $${BUILD_DIR}; \
-	    ln -s $${CURRENT_DIR} $${BUILD_DIR}; \
-	fi
+all: clean test vet linux darwin windows
 
 linux:
 	cd ${BUILD_DIR}; \
-	GOOS=linux GOARCH=${GOARCH} go build ${LDFLAGS} -o ${BINARY}-linux-${GOARCH} . ; \
+	GOOS=linux GOARCH=${GOARCH} go build ${LDFLAGS} -o ../../bin/${BINARY}-linux-${GOARCH} . ; \
 	cd - >/dev/null
 
 darwin:
 	cd ${BUILD_DIR}; \
-	GOOS=darwin GOARCH=${GOARCH} go build ${LDFLAGS} -o ${BINARY}-darwin-${GOARCH} . ; \
+	GOOS=darwin GOARCH=${GOARCH} go build ${LDFLAGS} -o ../../bin/${BINARY}-darwin-${GOARCH} . ; \
 	cd - >/dev/null
 
 windows:
 	cd ${BUILD_DIR}; \
-	GOOS=windows GOARCH=${GOARCH} go build ${LDFLAGS} -o ${BINARY}-windows-${GOARCH}.exe . ; \
+	GOOS=windows GOARCH=${GOARCH} go build ${LDFLAGS} -o ../../bin/${BINARY}-windows-${GOARCH}.exe . ; \
 	cd - >/dev/null
 
 test:
-	# something is wrong with this
+	# something is wrong with this, fix later
 	# if ! hash go2xunit 2>/dev/null; then go install github.com/tebeka/go2xunit; fi
 	# cd ${BUILD_DIR}; \
 	# godep go test -v ./... 2>&1 | go2xunit -output ${TEST_REPORT} ; \
@@ -57,9 +46,10 @@ test:
 	# Just doing basic test now
 	go test ./...
 vet:
-	-cd ${BUILD_DIR}; \
-	godep go vet ./... > ${VET_REPORT} 2>&1 ; \
-	cd - >/dev/null
+	# To fix later
+	# -cd ${BUILD_DIR}; \
+	# go vet ./... > ${VET_REPORT} 2>&1 ; \
+	# cd - >/dev/null
 
 fmt:
 	cd ${BUILD_DIR}; \
@@ -71,4 +61,4 @@ clean:
 	-rm -f ${VET_REPORT}
 	-rm -f ${BINARY}-*
 
-.PHONY: link linux darwin windows test vet fmt clean
+.PHONY: linux darwin windows test vet fmt clean
