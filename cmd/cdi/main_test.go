@@ -3,15 +3,22 @@ package main_test
 import (
 	"testing"
 
+	"github.com/rendon/testcli"
 	"github.com/stretchr/testify/assert"
 )
 
-// TODO: Figure out how to test main finction
-// func TestMain(m *testing.M) {
-// 	exitCode := m.Run()
+func TestCommand(t *testing.T) {
+	c := testcli.Command("cdi")
+	c.Run()
 
-// 	os.Exit(exitCode)
-// }
+	if !c.Success() {
+		t.Fatalf("Expected to succeed, but failed with error: %s", c.Error())
+	}
+
+	if !c.StdoutContains("haz \"123\" branches") {
+		t.Fatalf("Expected %q to contain %q", c.Stdout(), "haz \"123\" branches")
+	}
+}
 
 func TestSomething(t *testing.T) {
 
