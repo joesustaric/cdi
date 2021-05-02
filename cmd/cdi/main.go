@@ -27,7 +27,7 @@ func main() {
 }
 
 func BranchCount(c *cli.Context) error {
-	// Branch cound code goes here..
+	// Branch count code goes here..
 	fmt.Printf("haz %q branches", "123")
 	return nil
 }
