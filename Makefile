@@ -43,8 +43,14 @@ test:
 	# cd ${BUILD_DIR}; \
 	# godep go test -v ./... 2>&1 | go2xunit -output ${TEST_REPORT} ; \
 	# cd - >/dev/null
+
+	# Compile the binary
+	cd cmd/cdi/; go install
+
+	cd ../..
 	# Just doing basic test now
-	go test ./...
+	go clean -testcache
+	go test ./... -v
 vet:
 	# To fix later
 	# -cd ${BUILD_DIR}; \
