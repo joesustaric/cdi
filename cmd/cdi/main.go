@@ -9,11 +9,15 @@ import (
 )
 
 // https://github.com/urfave/cli/blob/master/docs/v2/manual.md
+
+var version string = "0.1"
+
 func main() {
 	app := &cli.App{
 		Name:    "cdi",
 		Usage:   "cdi <link to repo>",
 		Action:  BranchCount,
+		Version: version,
 	}
 
 	err := app.Run(os.Args)
