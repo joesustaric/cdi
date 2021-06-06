@@ -36,29 +36,50 @@ func TestRawBranchClount_Returns_Count_Of_Branches(t *testing.T) {
 	mux.HandleFunc("/graphql", func(w http.ResponseWriter, req *http.Request) {
 
 		got := mustRead(req.Body)
-		want := `{"query":"{repository(owner: \"joesustaric\", name: \"cdi-test-repo\"){id,refs(refPrefix: \"refs/heads/\"){totalCount}}}"}` + "\n"
-		assert.Equal(t, got, want)
+		want := `{"query":"query($organisationName:String!$repositoryName:String!){repository(owner: \"$organisationName\", name: \"$repositoryName\"){id,refs(refPrefix: \"refs/heads/\"){totalCount}}}","variables":{"organisationName":"some-org","repositoryName":"some-repo"}}` + "\n"
+		assert.Equal(t, want, got)
 
 		w.Header().Set("Content-Type", "application/json")
 		resp := `{"data": {"repository": {"id": "someid","refs": {"totalCount": 23}}}}`
 		mustWrite(w, resp)
 	})
-	testClient := &http.Client{Transport: localRoundTripper{handler: mux}}
+	testClient := &http.Client{Transport: localTestServer{handler: mux}}
 
 	githubClient, _ := clients.NewGitHubClient(testClient)
 
-	repo := "https://github.com/joesustaric/cdi-test-repo.git"
+	repo := "https://github.com/some-org/some-repo.git"
 
 	branches, _ := githubClient.RawBranchCount(repo)
 
 	assert.Equal(t, 23, branches)
 }
 
-type localRoundTripper struct {
+func TestRawBranchClount_Returns_Error_When_500(t *testing.T) {
+	os.Setenv("GITHUB_TOKEN", "123456")
+	defer os.Unsetenv("GITHUB_TOKEN")
+
+	mux := http.NewServeMux()
+	mux.HandleFunc("/graphql", func(w http.ResponseWriter, req *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		mustWrite(w, "")
+	})
+	testClient := &http.Client{Transport: localTestServer{handler: mux}}
+
+	githubClient, _ := clients.NewGitHubClient(testClient)
+
+	repo := "https://github.com/joesustaric/cdi-test-repo.git"
+
+	_, e := githubClient.RawBranchCount(repo)
+
+	assert.NotNil(t, e)
+}
+
+type localTestServer struct {
 	handler http.Handler
 }
 
-func (l localRoundTripper) RoundTrip(req *http.Request) (*http.Response, error) {
+func (l localTestServer) RoundTrip(req *http.Request) (*http.Response, error) {
 	w := httptest.NewRecorder()
 	l.handler.ServeHTTP(w, req)
 	return w.Result(), nil

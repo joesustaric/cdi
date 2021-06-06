@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/shurcooL/githubv4"
 	"golang.org/x/oauth2"
@@ -34,19 +35,31 @@ func NewGitHubClient(httpClient *http.Client) (*GitHubClient, error) {
 	return &GitHubClient{gitHubClient: client}, nil
 }
 
-func (c *GitHubClient) RawBranchCount(repo string) (int, error) {
+func (c *GitHubClient) RawBranchCount(gitRepoLink string) (int, error) {
+	org, repo := c.extractOrgAndRepo(gitRepoLink)
+
 	var query struct {
 		Repository struct {
 			Id   string
 			Refs struct {
 				TotalCount int
 			} `graphql:"refs(refPrefix: \"refs/heads/\")"`
-		} `graphql:"repository(owner: \"joesustaric\", name: \"cdi-test-repo\")"`
+		} `graphql:"repository(owner: \"$organisationName\", name: \"$repositoryName\")"`
+	}
+	variables := map[string]interface{}{
+		"organisationName": githubv4.String(org),
+		"repositoryName":   githubv4.String(repo),
 	}
 
-	err := c.gitHubClient.Query(context.Background(), &query, nil)
+	err := c.gitHubClient.Query(context.Background(), &query, variables)
 	if err != nil {
 		return 0, err
 	}
 	return query.Repository.Refs.TotalCount, nil
+}
+
+func (c *GitHubClient) extractOrgAndRepo(gitRepoLink string) (string, string) {
+	split := strings.Split(gitRepoLink, "/")
+
+	return split[3], strings.Split(split[4], ".git")[0]
 }
