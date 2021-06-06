@@ -28,7 +28,7 @@ func TestNewGitHubClient_No_Error_With_Token(t *testing.T) {
 	assert.NotNil(t, client)
 }
 
-func TestClient_Returns_Raw_Branches(t *testing.T) {
+func TestRawBranchClount_Returns_Count_Of_Branches(t *testing.T) {
 	os.Setenv("GITHUB_TOKEN", "123456")
 	defer os.Unsetenv("GITHUB_TOKEN")
 
