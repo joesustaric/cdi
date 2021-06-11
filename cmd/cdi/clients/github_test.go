@@ -36,7 +36,7 @@ func TestRawBranchClount_Returns_Count_Of_Branches(t *testing.T) {
 	mux.HandleFunc("/graphql", func(w http.ResponseWriter, req *http.Request) {
 
 		got := mustRead(req.Body)
-		want := `{"query":"query($organisationName:String!$repositoryName:String!){repository(owner: \"$organisationName\", name: \"$repositoryName\"){id,refs(refPrefix: \"refs/heads/\"){totalCount}}}","variables":{"organisationName":"some-org","repositoryName":"some-repo"}}` + "\n"
+		want := `{"query":"query($organisationName:String!$repositoryName:String!){repository(owner: $organisationName, name: $repositoryName){id,refs(refPrefix: \"refs/heads/\"){totalCount}}}","variables":{"organisationName":"some-org","repositoryName":"some-repo"}}` + "\n"
 		assert.Equal(t, want, got)
 
 		w.Header().Set("Content-Type", "application/json")

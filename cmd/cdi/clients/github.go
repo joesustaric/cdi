@@ -12,6 +12,10 @@ import (
 	"golang.org/x/oauth2"
 )
 
+type Client interface {
+	RawBranchCount(link string) (int, error)
+}
+
 type GitHubClient struct {
 	gitHubClient *githubv4.Client
 }
@@ -44,7 +48,7 @@ func (c *GitHubClient) RawBranchCount(gitRepoLink string) (int, error) {
 			Refs struct {
 				TotalCount int
 			} `graphql:"refs(refPrefix: \"refs/heads/\")"`
-		} `graphql:"repository(owner: \"$organisationName\", name: \"$repositoryName\")"`
+		} `graphql:"repository(owner: $organisationName, name: $repositoryName)"`
 	}
 	variables := map[string]interface{}{
 		"organisationName": githubv4.String(org),
@@ -55,6 +59,7 @@ func (c *GitHubClient) RawBranchCount(gitRepoLink string) (int, error) {
 	if err != nil {
 		return 0, err
 	}
+
 	return query.Repository.Refs.TotalCount, nil
 }
 
