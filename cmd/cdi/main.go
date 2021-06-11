@@ -38,7 +38,11 @@ func main() {
 }
 
 func BranchCount(c *cli.Context) error {
-	a, b := client.RawBranchCount(c.Args().Get(0))
-	fmt.Printf("haz %d branches\n", a)
-	return b
+	count, e := client.RawBranchCount(c.Args().Get(0))
+	if e != nil {
+		return e
+	}
+
+	fmt.Printf("haz %d branches\n", count)
+	return nil
 }
