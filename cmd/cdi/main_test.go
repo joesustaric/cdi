@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestCommand(t *testing.T) {
+func TestGitHub_Branch_count(t *testing.T) {
 
 	os.Setenv("TESTING", "true")
 	defer os.Unsetenv("TESTING")
