@@ -1,27 +1,26 @@
 package main_test
 
 import (
-	"testing"
-
 	"github.com/rendon/testcli"
-	"github.com/stretchr/testify/assert"
+	"os"
+	"testing"
 )
 
-func TestCommand(t *testing.T) {
-	c := testcli.Command("cdi")
+func TestGitHub_Branch_count(t *testing.T) {
+
+	os.Setenv("TESTING", "true")
+	defer os.Unsetenv("TESTING")
+
+	repo := "https://github.com/random-org/amazing-repo.git"
+	c := testcli.Command("cdi", repo)
+
 	c.Run()
 
 	if !c.Success() {
 		t.Fatalf("Expected to succeed, but failed with error: %s", c.Error())
 	}
 
-	if !c.StdoutContains("haz \"123\" branches") {
-		t.Fatalf("Expected %q to contain %q", c.Stdout(), "haz \"123\" branches")
+	if !c.StdoutContains("haz 23 branches") {
+		t.Fatalf("Expected %q to contain %q", c.Stdout(), "haz 23 branches\n")
 	}
-}
-
-func TestSomething(t *testing.T) {
-
-	assert.True(t, true, "True is true!")
-
 }
