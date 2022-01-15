@@ -28,7 +28,7 @@ func TestNewGitHubClient_No_Error_With_Token(t *testing.T) {
 	assert.NotNil(t, client)
 }
 
-func TestRawBranchClount_Returns_Count_Of_Branches(t *testing.T) {
+func TestRawBranchCount_Returns_Count_Of_Branches(t *testing.T) {
 	os.Setenv("GITHUB_TOKEN", "123456")
 	defer os.Unsetenv("GITHUB_TOKEN")
 
@@ -54,7 +54,7 @@ func TestRawBranchClount_Returns_Count_Of_Branches(t *testing.T) {
 	assert.Equal(t, 23, branches)
 }
 
-func TestRawBranchClount_Returns_Error_When_500(t *testing.T) {
+func TestRawBranchCount_Returns_Error_When_500(t *testing.T) {
 	os.Setenv("GITHUB_TOKEN", "123456")
 	defer os.Unsetenv("GITHUB_TOKEN")
 

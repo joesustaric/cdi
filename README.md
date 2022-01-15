@@ -19,7 +19,7 @@ cd cdi
 #TODO
 
 # Run tests
-#TODO
+make test
 ```
 
 ### Dependency management
