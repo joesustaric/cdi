@@ -1,9 +1,10 @@
 package main_test
 
 import (
-	"github.com/rendon/testcli"
 	"os"
 	"testing"
+
+	"github.com/rendon/testcli"
 )
 
 func TestGitHub_Branch_count(t *testing.T) {
