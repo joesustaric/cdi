@@ -11,7 +11,9 @@ import (
 
 // https://github.com/urfave/cli/blob/master/docs/v2/manual.md
 
-var version = "0.1"
+var VERSION = "development"
+var COMMIT = ""
+var BRANCH = ""
 
 var client clients.Client = nil
 
@@ -20,7 +22,7 @@ func main() {
 		Name:    "cdi",
 		Usage:   "cdi <link to repo>",
 		Action:  BranchCount,
-		Version: version,
+		Version: VERSION,
 	}
 
 	_, ok := os.LookupEnv("TESTING")
