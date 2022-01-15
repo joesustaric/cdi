@@ -3,16 +3,15 @@
 
 BINARY = cdi
 VET_REPORT = vet.report
-TEST_REPORT = tests.xml
 GOARCH = amd64
 
-VERSION?=0.1
+VERSION?=0.1.1
 COMMIT=$(shell git rev-parse HEAD)
 BRANCH=$(shell git rev-parse --abbrev-ref HEAD)
 
 # Symlink into GOPATH
 GITHUB_USERNAME=joesustaric
-BUILD_DIR=${GOPATH}/src/github.com/${GITHUB_USERNAME}/cdi/cmd/cdi
+BUILD_DIR=${GOPATH}/cdi/cmd/cdi
 CURRENT_DIR=$(shell pwd)
 BUILD_DIR_LINK=$(shell readlink ${BUILD_DIR})
 
@@ -37,20 +36,27 @@ windows:
 	GOOS=windows GOARCH=${GOARCH} go build ${LDFLAGS} -o ../../bin/${BINARY}-windows-${GOARCH}.exe . ; \
 	cd - >/dev/null
 
-test:
-	# something is wrong with this, fix later
-	# if ! hash go2xunit 2>/dev/null; then go install github.com/tebeka/go2xunit; fi
-	# cd ${BUILD_DIR}; \
-	# godep go test -v ./... 2>&1 | go2xunit -output ${TEST_REPORT} ; \
-	# cd - >/dev/null
+update:
+	go get -u ./...
 
-	# Compile the binary
+test:
+	# Compile the binary into the GOPATH
 	cd cmd/cdi/; go install
 
 	cd ../..
 	# Just doing basic test now
 	go clean -testcache
 	go test ./... -v
+
+test-with-report:
+	# Compile the binary into the GOPATH
+	cd cmd/cdi/; go install
+
+	cd ../..
+	# Just doing basic test now
+	go clean -testcache
+	go test ./... -v -json | go-test-report
+
 vet:
 	# To fix later
 	# -cd ${BUILD_DIR}; \
