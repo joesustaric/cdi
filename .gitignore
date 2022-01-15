@@ -18,3 +18,4 @@ bin/**/*
 junk/
 
 .idea
+*.html
