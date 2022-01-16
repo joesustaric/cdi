@@ -1,5 +1,16 @@
 # Continuous DisIntegration
-<todo some semi witty intro>
+
+This tool is (will be) designed to assist with identifying (and hopefully help rectify) actions that people and teams do to code bases which slow down Continuos Integration (Continuos DisIntegration).
+
+Currently all this tool can do is count how many branches exist for a single GitHub repository.
+
+# Coming Soon Features
+In no particular order..  
+- Given a GitHub Organization for all repositories, count the branches
+- Break down counts to branches that can be deleted (already merged) and ones with unmerged work
+- Functionality to delete branches that have been merged
+- Functionality to delete branches that live older than x days (configurable).
+- Analysis on if there is _any_feedback on PR's (comment counts and distributions) 
 
 # Usage
 <todo>
