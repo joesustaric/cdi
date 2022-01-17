@@ -1,6 +1,6 @@
 # Continuous DisIntegration
 
-This tool is (will be) designed to assist with identifying (and hopefully help rectify) actions that people and teams do to code bases which slow down Continuos Integration (Continuos DisIntegration).
+This tool is (will be) designed to assist with identifying (and hopefully help rectify) actions that people and teams do to code bases which slow down Continuous Integration (Continuous DisIntegration).
 
 Currently all this tool can do is count how many branches exist for a single GitHub repository.
 
