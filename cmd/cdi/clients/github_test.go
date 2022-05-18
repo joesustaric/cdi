@@ -73,7 +73,7 @@ func TestRawBranchCount_Returns_Error_When_Bad_Token(t *testing.T) {
 		Source: oauth2.ReuseTokenSource(nil, ts),
 	}
 	// Start our recorder
-	vcrRecorder, err := recorder.NewAsMode(path.Join("fixtures", "github", t.Name()), recorder.ModeRecording, tr)
+	vcrRecorder, err := recorder.NewAsMode(path.Join("fixtures", "github", t.Name()), recorder.ModeReplaying, tr)
 	require.NoError(t, err)
 	defer vcrRecorder.Stop()
 
