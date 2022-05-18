@@ -1,0 +1,61 @@
+---
+version: 1
+interactions:
+- request:
+    body: |
+      {"query":"query($organisationName:String!$repositoryName:String!){repository(owner: $organisationName, name: $repositoryName){id,refs(refPrefix: \"refs/heads/\"){totalCount}}}","variables":{"organisationName":"joesustaric","repositoryName":"cdi-test-repo"}}
+    form: {}
+    headers:
+      Content-Type:
+      - application/json
+    url: https://api.github.com/graphql
+    method: POST
+  response:
+    body: '{"message":"Bad credentials","documentation_url":"https://docs.github.com/graphql"}'
+    headers:
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Expose-Headers:
+      - ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining,
+        X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes,
+        X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO,
+        X-GitHub-Request-Id, Deprecation, Sunset
+      Content-Length:
+      - "83"
+      Content-Security-Policy:
+      - default-src 'none'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Wed, 18 May 2022 04:38:04 GMT
+      Referrer-Policy:
+      - origin-when-cross-origin, strict-origin-when-cross-origin
+      Server:
+      - GitHub.com
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubdomains; preload
+      Vary:
+      - Accept-Encoding, Accept, X-Requested-With
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - deny
+      X-Github-Media-Type:
+      - github.v4; format=json
+      X-Github-Request-Id:
+      - F9FB:1A71:485CD6:4E444B:6284782C
+      X-Ratelimit-Limit:
+      - "0"
+      X-Ratelimit-Remaining:
+      - "0"
+      X-Ratelimit-Reset:
+      - "1652852284"
+      X-Ratelimit-Resource:
+      - graphql
+      X-Ratelimit-Used:
+      - "0"
+      X-Xss-Protection:
+      - "0"
+    status: 401 Unauthorized
+    code: 401
+    duration: ""

@@ -1,15 +1,16 @@
 package clients_test
 
 import (
-	"io"
-	"io/ioutil"
 	"net/http"
-	"net/http/httptest"
 	"os"
+	"path"
 	"testing"
 
+	"github.com/dnaeon/go-vcr/recorder"
 	"github.com/joesustaric/cdi/cmd/cdi/clients"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+	"golang.org/x/oauth2"
 )
 
 func TestNewGitHubClient_Error_When_No_Token(t *testing.T) {
@@ -32,70 +33,59 @@ func TestRawBranchCount_Returns_Count_Of_Branches(t *testing.T) {
 	os.Setenv("GITHUB_TOKEN", "123456")
 	defer os.Unsetenv("GITHUB_TOKEN")
 
-	mux := http.NewServeMux()
-	mux.HandleFunc("/graphql", func(w http.ResponseWriter, req *http.Request) {
+	ts := oauth2.StaticTokenSource(
+		&oauth2.Token{AccessToken: "put-real-token-in-here-when-re-recording-response"},
+	)
 
-		got := mustRead(req.Body)
-		want := `{"query":"query($organisationName:String!$repositoryName:String!){repository(owner: $organisationName, name: $repositoryName){id,refs(refPrefix: \"refs/heads/\"){totalCount}}}","variables":{"organisationName":"some-org","repositoryName":"some-repo"}}` + "\n"
-		assert.Equal(t, want, got)
+	tr := &oauth2.Transport{
+		Base:   http.DefaultTransport,
+		Source: oauth2.ReuseTokenSource(nil, ts),
+	}
+	// Start our recorder
+	vcrRecorder, err := recorder.NewAsMode(path.Join("fixtures", "github", t.Name()), recorder.ModeReplaying, tr)
+	require.NoError(t, err)
+	defer vcrRecorder.Stop()
 
-		w.Header().Set("Content-Type", "application/json")
-		resp := `{"data": {"repository": {"id": "someid","refs": {"totalCount": 23}}}}`
-		mustWrite(w, resp)
-	})
-	testClient := &http.Client{Transport: localTestServer{handler: mux}}
+	httpClient := &http.Client{
+		Transport: vcrRecorder,
+	}
 
-	githubClient, _ := clients.NewGitHubClient(testClient)
+	githubClient, _ := clients.NewGitHubClient(httpClient)
 
-	repo := "https://github.com/some-org/some-repo.git"
+	repo := "https://github.com/joesustaric/cdi-test-repo"
 
-	branches, _ := githubClient.RawBranchCount(repo)
+	count, err := githubClient.RawBranchCount(repo)
 
-	assert.Equal(t, 23, branches)
+	require.NoError(t, err)
+	assert.Equal(t, 23, count)
 }
 
-func TestRawBranchCount_Returns_Error_When_500(t *testing.T) {
+func TestRawBranchCount_Returns_Error_When_Bad_Token(t *testing.T) {
 	os.Setenv("GITHUB_TOKEN", "123456")
 	defer os.Unsetenv("GITHUB_TOKEN")
 
-	mux := http.NewServeMux()
-	mux.HandleFunc("/graphql", func(w http.ResponseWriter, req *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusInternalServerError)
-		mustWrite(w, "")
-	})
-	testClient := &http.Client{Transport: localTestServer{handler: mux}}
+	ts := oauth2.StaticTokenSource(
+		&oauth2.Token{AccessToken: "put-real-token-in-here-when-re-recording-response"},
+	)
 
-	githubClient, _ := clients.NewGitHubClient(testClient)
+	tr := &oauth2.Transport{
+		Base:   http.DefaultTransport,
+		Source: oauth2.ReuseTokenSource(nil, ts),
+	}
+	// Start our recorder
+	vcrRecorder, err := recorder.NewAsMode(path.Join("fixtures", "github", t.Name()), recorder.ModeReplaying, tr)
+	require.NoError(t, err)
+	defer vcrRecorder.Stop()
+
+	httpClient := &http.Client{
+		Transport: vcrRecorder,
+	}
+
+	githubClient, _ := clients.NewGitHubClient(httpClient)
 
 	repo := "https://github.com/joesustaric/cdi-test-repo.git"
 
 	_, e := githubClient.RawBranchCount(repo)
 
 	assert.NotNil(t, e)
-}
-
-type localTestServer struct {
-	handler http.Handler
-}
-
-func (l localTestServer) RoundTrip(req *http.Request) (*http.Response, error) {
-	w := httptest.NewRecorder()
-	l.handler.ServeHTTP(w, req)
-	return w.Result(), nil
-}
-
-func mustRead(r io.Reader) string {
-	b, err := ioutil.ReadAll(r)
-	if err != nil {
-		panic(err)
-	}
-	return string(b)
-}
-
-func mustWrite(w io.Writer, s string) {
-	_, err := io.WriteString(w, s)
-	if err != nil {
-		panic(err)
-	}
 }
