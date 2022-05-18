@@ -18,4 +18,5 @@ bin/**/*
 junk/
 
 .idea
+.vscode
 *.html
