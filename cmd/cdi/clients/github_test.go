@@ -30,11 +30,11 @@ func TestNewGitHubClient_No_Error_With_Token(t *testing.T) {
 }
 
 func TestRawBranchCount_Returns_Count_Of_Branches(t *testing.T) {
-	os.Setenv("GITHUB_TOKEN", "123456")
+	os.Setenv("GITHUB_TOKEN", "234")
 	defer os.Unsetenv("GITHUB_TOKEN")
 
 	ts := oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: "put-real-token-in-here-when-re-recording-response"},
+		&oauth2.Token{AccessToken: "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"},
 	)
 
 	tr := &oauth2.Transport{
@@ -42,7 +42,7 @@ func TestRawBranchCount_Returns_Count_Of_Branches(t *testing.T) {
 		Source: oauth2.ReuseTokenSource(nil, ts),
 	}
 	// Start our recorder
-	vcrRecorder, err := recorder.NewAsMode(path.Join("fixtures", "github", t.Name()), recorder.ModeReplaying, tr)
+	vcrRecorder, err := recorder.NewAsMode(path.Join("fixtures", "github", t.Name()), recorder.ModeRecording, tr)
 	require.NoError(t, err)
 	defer vcrRecorder.Stop()
 
@@ -57,7 +57,7 @@ func TestRawBranchCount_Returns_Count_Of_Branches(t *testing.T) {
 	count, err := githubClient.RawBranchCount(repo)
 
 	require.NoError(t, err)
-	assert.Equal(t, 23, count)
+	assert.Equal(t, 3, count)
 }
 
 func TestRawBranchCount_Returns_Error_When_Bad_Token(t *testing.T) {

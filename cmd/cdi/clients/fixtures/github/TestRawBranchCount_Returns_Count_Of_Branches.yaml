@@ -11,7 +11,7 @@ interactions:
     url: https://api.github.com/graphql
     method: POST
   response:
-    body: '{"message":"Bad credentials","documentation_url":"https://docs.github.com/graphql"}'
+    body: '{"data":{"repository":{"id":"MDEwOlJlcG9zaXRvcnkzNjEzNjQzNDU=","refs":{"totalCount":3}}}}'
     headers:
       Access-Control-Allow-Origin:
       - '*'
@@ -20,14 +20,14 @@ interactions:
         X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes,
         X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO,
         X-GitHub-Request-Id, Deprecation, Sunset
-      Content-Length:
-      - "83"
       Content-Security-Policy:
       - default-src 'none'
       Content-Type:
       - application/json; charset=utf-8
       Date:
-      - Wed, 18 May 2022 04:34:00 GMT
+      - Thu, 19 May 2022 12:42:27 GMT
+      Github-Authentication-Token-Expiration:
+      - 2022-08-17 12:41:44 UTC
       Referrer-Policy:
       - origin-when-cross-origin, strict-origin-when-cross-origin
       Server:
@@ -36,6 +36,8 @@ interactions:
       - max-age=31536000; includeSubdomains; preload
       Vary:
       - Accept-Encoding, Accept, X-Requested-With
+      X-Accepted-Oauth-Scopes:
+      - repo
       X-Content-Type-Options:
       - nosniff
       X-Frame-Options:
@@ -43,19 +45,21 @@ interactions:
       X-Github-Media-Type:
       - github.v4; format=json
       X-Github-Request-Id:
-      - F9CF:7F03:3FF0:5E546:62847738
+      - EE7D:29A4:2BA15F:2EE64C:62863B33
+      X-Oauth-Scopes:
+      - read:discussion, read:enterprise, read:org, read:repo_hook, read:user, repo
       X-Ratelimit-Limit:
-      - "0"
+      - "5000"
       X-Ratelimit-Remaining:
-      - "0"
+      - "4999"
       X-Ratelimit-Reset:
-      - "1652852040"
+      - "1652967747"
       X-Ratelimit-Resource:
       - graphql
       X-Ratelimit-Used:
-      - "0"
+      - "1"
       X-Xss-Protection:
       - "0"
-    status: 401 Unauthorized
-    code: 401
+    status: 200 OK
+    code: 200
     duration: ""
